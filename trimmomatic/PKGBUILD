@@ -4,12 +4,12 @@ pkgname=trimmomatic
 _n=trimmomatic
 _N=Trimmomatic
 pkgver=0.27
-pkgrel=1
+pkgrel=2
 pkgdesc="Illumina single- and paired-end adapter trimming."
 arch=('any')
 url="http://www.usadellab.org/cms/index.php?page=trimmomatic"
 license=('GPL')
-depends=('java-runtime')
+depends=('java-runtime-headless')
 source=(http://www.usadellab.org/cms/uploads/supplementary/$_N/$_N-$pkgver.zip
         trimmomatic.sh)
 md5sums=('5e5b55c0768dec536e91bf35b7daa7ca'
