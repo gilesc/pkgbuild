@@ -1,0 +1,62 @@
+# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+
+pkgname=picard-tools
+pkgver=1.90
+pkgrel=1
+pkgdesc="A set of Java tools for working with next generation sequencing data in the BAM format."
+arch=('any')
+url="http://sourceforge.net/projects/picard/"
+license=('GPL')
+makedepends=('unzip')
+depends=('java-runtime-headless')
+source=(http://downloads.sourceforge.net/project/picard/$pkgname/$pkgver/$pkgname-$pkgver.zip)
+md5sums=('d049eb70cd9a835ecd4f1f034675baeb')
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+    shopt -s extglob
+    mkdir lib 
+    for file in *.jar; do
+        CLASS=`unzip -p $file META-INF/MANIFEST.MF \
+            | grep Main-Class | cut -f2 -d" " | tr -d '\r'`
+        if [ -n "$CLASS" ]; then
+            CMD=`basename $file .jar`
+            echo -e "$CMD\t$CLASS" >> available-commands
+        else
+            mv $file lib
+        fi
+    done
+cat << "EOF" > picard-tools
+#!/bin/bash
+DIR=/usr/share/picard-tools
+
+usage() {
+    echo "USAGE: $0 COMMAND [command-args]"
+    echo "Available commands:"
+    for cmd in `cut -f1 $DIR/available-commands`; do
+        echo "* $cmd"
+    done
+    exit 1
+}
+
+[[ "$#" -gt 0 ]] || usage
+[[  "-h" = $1 ]] && usage
+
+CLASS=`grep "^$1\b" $DIR/available-commands | cut -f2`
+
+if [[ -z $CLASS ]]; then
+    usage
+fi
+
+java -cp "$DIR/*" $CLASS "${*:2}"
+EOF
+    chmod +x picard-tools
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+    mkdir -p $pkgdir/usr/share/picard-tools 
+    install -m644 -t $pkgdir/usr/share/picard-tools \
+        lib/*.jar available-commands
+    install -D -m755 picard-tools $pkgdir/usr/bin/picard-tools
+}
