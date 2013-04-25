@@ -14,11 +14,13 @@ source=('http://ea-utils.googlecode.com/files/ea-utils.'$_pkgver'.tar.gz')
 md5sums=('b8d3bcc39edc7fe66d00ed54d9e59830')
 
 build() {
-	cd "$srcdir/$pkgname.$_pkgver"
+	cd "$srcdir/$pkgname"."$_pkgver"
+    unset CFLAGS
 	make
 }
 
 package() {
-	cd "$srcdir/$pkgname.$_pkgver"
+	cd "$srcdir/$pkgname"."$_pkgver"
 	make PREFIX="$pkgdir/usr" install
+    install -m755 -t $pkgdir/usr/bin varcall sam-stats
 }
