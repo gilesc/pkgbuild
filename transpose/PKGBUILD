@@ -1,0 +1,22 @@
+# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+
+pkgname=transpose
+pkgver=2.0
+pkgrel=1
+pkgdesc="Reshape or transpose delimited text data."
+arch=('any')
+url="http://sourceforge.net/projects/transpose/"
+license=('GPL')
+source=(http://downloads.sourceforge.net/project/$pkgname/$pkgname/$pkgname-$pkgver/$pkgver/$pkgname-$pkgver.zip)
+md5sums=('deb6375bf6533fee474c75918d3a18c6')
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+    gcc -O3 src/transpose.c -o transpose
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+    mkdir -p $pkgdir/usr/bin
+    install -t $pkgdir/usr/bin transpose
+}
