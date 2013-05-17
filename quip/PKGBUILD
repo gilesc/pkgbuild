@@ -1,4 +1,5 @@
-# Maintainer: Cory Giles
+# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+
 pkgname=quip
 pkgver=1.1.6
 pkgrel=2
