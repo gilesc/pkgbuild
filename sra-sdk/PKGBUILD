@@ -1,0 +1,28 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname=sra-sdk
+_pkgname=sra_sdk
+pkgver=2.3.2.4
+_pkgver=2.3.2-4
+pkgrel=1
+pkgdesc="A collection of tools and libraries for using data in the INSDC Sequence Read Archives."
+arch=('i686' 'x86_64')
+url=""
+license=('GPL')
+depends=('libxml2' 'curl' 'zlib' 'bzip2')
+source=(http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/$_pkgver/$_pkgname-${_pkgver}.tar.gz)
+md5sums=('ad56257788118a08d2c5498f91bcc582')
+
+build() {
+	cd "$srcdir/$_pkgname-$_pkgver"
+    make static
+	make
+}
+
+package() {
+	cd "$srcdir"
+    mkdir -p $pkgdir/usr/bin 
+    [ "$(uname -m)" = "x86_64" ] && NB=64 || NB=32
+    cp -dr --no-preserve=ownership \
+        $_pkgname-$_pkgver/bin$NB/* $pkgdir/usr/bin
+}
