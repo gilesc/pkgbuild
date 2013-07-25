@@ -1,0 +1,28 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname=biohdf
+pkgver=0.4a
+pkgrel=1
+pkgdesc="Store biological reads and alignments in HDF."
+arch=('any')
+url="http://www.hdfgroup.org/projects/biohdf/biohdf_downloads.html"
+license=('MIT')
+depends=('hdf5')
+source=(http://www.hdfgroup.uiuc.edu/ftp/pub/outgoing/BioHDF/Release/biohdf-0.4a.tar.gz)
+md5sums=('25f51f4cfeee3c53a56462ea40965e1b')
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+
+check() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make -k check
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir/" install
+}
