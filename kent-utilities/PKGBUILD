@@ -1,0 +1,69 @@
+# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+
+pkgname=('kent-utilities')
+_pkgname=jksrc
+pkgver=282
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc="Jim Kent's utilities for manipulating genomic data, including the UCSC Genome Browser."
+url=("http://hgdownload.cse.ucsc.edu/admin/"
+     "http://genomewiki.ucsc.edu/index.php/Kent_source_utilities")
+license=('custom')
+
+makedepends=('libarchive')
+depends=('libmysqlclient' 'zlib' 'libpng>=1.5.0')
+optdepends=('apache')
+conflicts=('blat')
+provides=('blat')
+
+source=(http://hgdownload.cse.ucsc.edu/admin/${_pkgname}.v${pkgver}.zip)
+md5sums=('a9b8af84d290027abee72a5cded8c502')
+
+MACHTYPE=`uname -m`
+MYSQLLIBS="/usr/lib/libmysqlclient.a -ldl -lz"
+MYSQLINC="/usr/include/mysql"
+PNGINCL="-I"$(echo /usr/include/libpng* | sort -r | tr ' ' '\n' | head -1)
+PNGLIB=$(echo /usr/lib/libpng*.a | sort -r | tr ' ' '\n' | head -1)" -lm -lz"
+NCPU=$(grep processor /proc/cpuinfo | wc -l)
+
+build() {
+    # Build the Kent utilities
+    mkdir -p "$srcdir/bin/$MACHTYPE" \
+        $srcdir/ucsc-genome-browser/{cgi-bin,cgi-bin-user,bin}
+    export SCRIPTS=$srcdir/bin/$MACHTYPE
+    export BINDIR=$srcdir/bin/$MACHTYPE
+
+	cd "$srcdir/kent/src"
+    HOME=$srcdir make -j$NCPU libs
+    cd utils/
+    HOME=$srcdir make -j$NCPU
+    cd ..
+    HOME=$srcdir make -j$NCPU blatSuite
+
+    # Build the Genome Browser
+    export CGI_BIN=$srcdir/ucsc-genome-browser/cgi-bin
+    export DOCUMENTROOT=$srcdir/ucsc-genome-browser
+    cd hg
+    HOME=$srcdir USER=user make -j$NCPU
+    rm -r $srcdir/ucsc-genome-browser/cgi-bin-user
+
+    mkdir -p $srcdir/perl
+    mv $srcdir/bin/$MACHTYPE/*.pm $srcdir/perl
+}
+
+package() {
+	cd "$srcdir"
+    mkdir -p $pkgdir/usr/{bin,lib}
+    mkdir -p $pkgdir/usr/include/kent
+    mkdir -p $pkgdir/usr/lib/perl5/vendor_perl
+    mkdir -p $pkgdir/usr/share/doc
+    mkdir -p $pkgdir/usr/share/webapps
+
+    install -t $pkgdir/usr/lib/perl5/vendor_perl perl/*
+    install -t $pkgdir/usr/share/doc kent/README
+    install -t $pkgdir/usr/bin bin/$MACHTYPE/* 
+    install -t $pkgdir/usr/lib kent/src/lib/$MACHTYPE/*.a
+    install -t $pkgdir/usr/include/kent kent/src/inc/*
+    cp -dr --no-preserve=ownership $srcdir/ucsc-genome-browser \
+        $pkgdir/usr/share/webapps
+}
