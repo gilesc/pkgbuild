@@ -1,4 +1,4 @@
-# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+# Maintainer: Cory Giles <mail@corygil.es>
 
 pkgname=picard-tools
 pkgver=1.90
@@ -8,7 +8,7 @@ arch=('any')
 url="http://sourceforge.net/projects/picard/"
 license=('GPL')
 makedepends=('unzip')
-depends=('java-runtime-headless')
+depends=('java-runtime')
 source=(http://downloads.sourceforge.net/project/picard/$pkgname/$pkgver/$pkgname-$pkgver.zip)
 md5sums=('d049eb70cd9a835ecd4f1f034675baeb')
 
