@@ -1,0 +1,29 @@
+# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+
+pkgname=lingpipe
+pkgver=4.1.0
+pkgrel=1
+pkgdesc="Java tools for natural language processing."
+arch=('any')
+url="http://alias-i.com/"
+license=('custom')
+depends=('java-runtime')
+source=(http://$pkgname-download.s3.amazonaws.com/$pkgname-$pkgver.tar.gz)
+noextract=()
+md5sums=('22440ce6abf8cc15faf68b63b32f6171')
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+
+check() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make -k check
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir/" install
+}
