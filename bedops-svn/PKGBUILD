@@ -1,0 +1,49 @@
+# Maintainer: Cory Giles <cory.b.giles@gmail.com>
+
+pkgname=bedops-svn
+pkgver=20130506
+pkgrel=1
+pkgdesc="Highly scalable genomic feature operations."
+arch=('i686' 'x86_64')
+url="http://code.google.com/bedops"
+license=('GPL')
+makedepends=('subversion')
+provides=('bedops')
+conflicts=('bedops')
+source=()
+md5sums=() #generate with 'makepkg -g'
+
+_svntrunk=http://bedops.googlecode.com/svn/trunk/
+_svnmod=HEAD
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to SVN server...."
+
+  if [[ -d "$_svnmod/.svn" ]]; then
+    (cd "$_svnmod" && svn up -r "$_svnmod")
+  else
+    svn co "$_svntrunk" --config-dir ./ -r "$_svnmod" "$_svnmod"
+  fi
+
+
+  msg "SVN checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_svnmod-build"
+  svn export "$srcdir/$_svnmod" "$srcdir/$_svnmod-build"
+  cd "$srcdir/$_svnmod-build"
+
+  make || true
+  sed -i 's/-Werror//g' third-party/jansson-2.4/Makefile.*
+  make
+  make install
+}
+
+package() {
+  cd "$srcdir/$_svnmod-build"
+  mkdir -p $pkgdir/usr/bin
+  install -t $pkgdir/usr/bin bin/*
+}
+
+# vim:set ts=2 sw=2 et:
