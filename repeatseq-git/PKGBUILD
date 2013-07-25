@@ -1,0 +1,56 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname=repeatseq-git
+pkgver=20130724
+pkgrel=1
+pkgdesc="Accurate microsatellite genotypes from high-throughput resequencing data."
+arch=('i686', 'x86_64')
+url="http://www.mittelmanlab.com"
+license=('CUSTOM')
+makedepends=('git')
+dependencies=('bamtools')
+provides=('repeatseq')
+source=('makefile.patch')
+md5sums=('01979069b87c10ad6e86b912b676dd22')
+
+_fastahack_gitroot=https://github.com/ekg/fastahack.git
+_gitroot=https://github.com/adaptivegenome/repeatseq.git
+_gitname=repeatseq
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  patch < "$srcdir/makefile.patch" 
+
+  if [ ! -f fastahack ]; then
+    git clone ${_fastahack_gitroot}
+  fi
+  make
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+  install -D repeatseq $pkgdir/usr/bin/repeatseq 
+  install -D license.txt $pkgdir/usr/share/licenses/repeatseq/LICENSE 
+  mkdir -p $pkgdir/usr/share/repeatseq
+  install -t $pkgdir/usr/share/repeatseq \
+    regions/hg19.max5.regions.gz \
+    regions/fly.max5.4chr.regions.gz
+}
+
+# vim:set ts=2 sw=2 et:
