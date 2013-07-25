@@ -4,4 +4,11 @@ pkgbuild
 
 Arch Linux PKGBUILDs in various states of (dis)repair.
 
-Warning: If it isn't already in the AUR, it probably doesn't work well (or at all).
+The following packages are in the AUR:
+
+- bedops
+- cramtools-git
+- ea-utils
+- quip
+
+Anything else is not guaranteed to work, use at your own risk, etc.
