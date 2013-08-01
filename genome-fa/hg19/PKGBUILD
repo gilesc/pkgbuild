@@ -1,0 +1,28 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+_REF=hg19
+
+pkgname=("genome-fa-${_REF}")
+pkgdesc="${_REF} genome in FASTA format with FASTA indexes."
+pkgver=1
+pkgrel=1
+arch=('any')
+license=('GPL')
+makedepends=('kent-utilities' 'samtools')
+source=("http://hgdownload.cse.ucsc.edu/goldenPath/${_REF}/bigZips/${_REF}.2bit")
+md5sums=('bcdbfbe9da62f19bee88b74dabef8cd3')
+PKGEXT='.pkg.tar.gz'
+
+echo $source
+
+build() {
+	cd "$srcdir/"
+    twoBitToFa ${_REF}.2bit ${_REF}.fa
+    samtools faidx ${_REF}.fa
+}
+
+package() {
+    cd "$srcdir/"
+    install -d "$pkgdir/usr/share/genomes"
+    install -t "$pkgdir/usr/share/genomes" ${_REF}.fa ${_REF}.fa.fai
+}
