@@ -2,7 +2,7 @@
 
 pkgname=('kent-utilities')
 _pkgname=jksrc
-pkgver=282
+pkgver=286
 pkgrel=1
 arch=('i686' 'x86_64')
 pkgdesc="Jim Kent's utilities for manipulating genomic data, including the UCSC Genome Browser."
@@ -17,14 +17,14 @@ conflicts=('blat')
 provides=('blat')
 
 source=(http://hgdownload.cse.ucsc.edu/admin/${_pkgname}.v${pkgver}.zip)
-md5sums=('a9b8af84d290027abee72a5cded8c502')
+md5sums=('855f94169e6936374a27ca8d611670ca')
 
-MACHTYPE=`uname -m`
-MYSQLLIBS="/usr/lib/libmysqlclient.a -ldl -lz"
-MYSQLINC="/usr/include/mysql"
-PNGINCL="-I"$(echo /usr/include/libpng* | sort -r | tr ' ' '\n' | head -1)
-PNGLIB=$(echo /usr/lib/libpng*.a | sort -r | tr ' ' '\n' | head -1)" -lm -lz"
-NCPU=$(grep processor /proc/cpuinfo | wc -l)
+export MACHTYPE=`uname -m`
+export MYSQLLIBS="/usr/lib/libmysqlclient.a -ldl -lz"
+export MYSQLINC="/usr/include/mysql"
+export PNGINCL="-I"$(echo /usr/include/libpng* | sort -r | tr ' ' '\n' | head -1)
+export PNGLIB=$(echo /usr/lib/libpng*.a | sort -r | tr ' ' '\n' | head -1)" -lm -lz"
+export NCPU=$(grep processor /proc/cpuinfo | wc -l)
 
 build() {
     # Build the Kent utilities
