@@ -10,12 +10,10 @@ license=('CUSTOM')
 makedepends=('git' 'bamtools')
 dependencies=('bamtools')
 provides=('repeatseq')
-source=('makefile.patch')
-md5sums=('01979069b87c10ad6e86b912b676dd22')
 
-_fastahack_gitroot=https://github.com/ekg/fastahack.git
-_gitroot=https://github.com/adaptivegenome/repeatseq.git
+_gitroot=git://wrenlab.org/repeatseq.git
 _gitname=repeatseq
+_gitbranch=archlinux
 
 build() {
   cd "$srcdir"
@@ -25,21 +23,16 @@ build() {
     cd "$_gitname" && git pull origin
     msg "The local files are updated."
   else
-    git clone "$_gitroot" "$_gitname"
+    git clone -b "$_gitbranch" "$_gitroot" "$_gitname"
   fi
 
   msg "GIT checkout done or server timeout"
   msg "Starting build..."
 
   rm -rf "$srcdir/$_gitname-build"
-  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  git clone -b "$_gitbranch" "$srcdir/$_gitname" "$srcdir/$_gitname-build"
   cd "$srcdir/$_gitname-build"
 
-  patch < "$srcdir/makefile.patch" 
-
-  if [ ! -f fastahack ]; then
-    git clone ${_fastahack_gitroot}
-  fi
   make
 }
 
