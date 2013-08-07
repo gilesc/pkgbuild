@@ -2,7 +2,7 @@
 
 pkgname=repeatseq-git
 pkgver=20130724
-pkgrel=1
+pkgrel=2
 pkgdesc="Accurate microsatellite genotypes from high-throughput resequencing data."
 arch=('i686', 'x86_64')
 url="http://www.mittelmanlab.com"
