@@ -2,7 +2,7 @@
 
 pkgname=('kent-utilities')
 _pkgname=jksrc
-pkgver=286
+pkgver=287
 pkgrel=1
 arch=('i686' 'x86_64')
 pkgdesc="Jim Kent's utilities for manipulating genomic data, including the UCSC Genome Browser."
@@ -10,14 +10,14 @@ url=("http://hgdownload.cse.ucsc.edu/admin/"
      "http://genomewiki.ucsc.edu/index.php/Kent_source_utilities")
 license=('custom')
 
-makedepends=('libarchive')
+makedepends=('libarchive' 'rsync')
 depends=('libmysqlclient' 'zlib' 'libpng>=1.5.0')
 optdepends=('apache')
 conflicts=('blat')
 provides=('blat')
 
 source=(http://hgdownload.cse.ucsc.edu/admin/${_pkgname}.v${pkgver}.zip)
-md5sums=('855f94169e6936374a27ca8d611670ca')
+md5sums=('72bc983bdd4f4cb03a443b8c4f57cb57')
 
 export MACHTYPE=`uname -m`
 export MYSQLLIBS="/usr/lib/libmysqlclient.a -ldl -lz"
@@ -55,11 +55,13 @@ package() {
 	cd "$srcdir"
     mkdir -p $pkgdir/usr/{bin,lib}
     mkdir -p $pkgdir/usr/include/kent
-    mkdir -p $pkgdir/usr/lib/perl5/vendor_perl
+    # There is a module called "Encode" which conflicts
+    # with the perl stdlib module.
+    #mkdir -p $pkgdir/usr/lib/perl5/vendor_perl
     mkdir -p $pkgdir/usr/share/doc
     mkdir -p $pkgdir/usr/share/webapps
 
-    install -t $pkgdir/usr/lib/perl5/vendor_perl perl/*
+    #install -t $pkgdir/usr/lib/perl5/vendor_perl perl/*
     install -t $pkgdir/usr/share/doc kent/README
     install -t $pkgdir/usr/bin bin/$MACHTYPE/* 
     install -t $pkgdir/usr/lib kent/src/lib/$MACHTYPE/*.a
