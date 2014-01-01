@@ -1,0 +1,21 @@
+# Author: Cory Giles <mail@corygil.es>
+
+pkgname=texlive-bioinfo
+pkgver=0.1
+pkgrel=1
+license=('GPL')
+depends=('texlive-core')
+pkgdesc="A LaTeX package providing the bioinfo document class, used by the journal Bioinformatics."
+url="http://www.oxfordjournals.org/our_journals/bioinformatics/for_authors/submission_online.html"
+arch=('any')
+install=texlive-bioinfo.install
+source=(http://www.oxfordjournals.org/our_journals/bioinformatics/for_authors/bioinfo01.zip)
+md5sums=('03db13040a78e17188aa491efb18dc12')
+
+build()
+{
+    destdir=$pkgdir/usr/share/texmf/tex/latex/bioinfo
+    mkdir -p $destdir
+    cp $srcdir/crop.sty $srcdir/bioinfo.cls $destdir
+    cp $srcdir/document.tex $destdir/example.tex
+}

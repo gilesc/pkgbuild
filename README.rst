@@ -2,13 +2,11 @@
 pkgbuild
 ========
 
-Arch Linux PKGBUILDs in various states of (dis)repair.
+Arch Linux PKGBUILDs.
 
-The following packages are in the AUR:
+The packages in the aur/ directory have already been uploaded to the AUR. Feel
+free to report bugs in them either here or in the relevant package's comments
+section on the AUR.
 
-- bedops
-- cramtools-git
-- ea-utils
-- quip
-
-Anything else is not guaranteed to work, use at your own risk, etc.
+Those packages in experimental/ are in various stages of development; some
+work, some don't. Use them at your own risk.
