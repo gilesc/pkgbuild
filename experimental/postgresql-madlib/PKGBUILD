@@ -1,0 +1,36 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname=postgresql-madlib
+_pkgname=madlib
+pkgver=1.4.0
+pkgrel=1
+pkgdesc="Statistics and machine learning library for PostgreSQL (Community edition)."
+arch=('i686' 'x86_64')
+url="http://madlib.net/product/"
+license=('custom')
+depends=('boost-libs' 'postgresql')
+makedepends=('boost' 'cmake' 'python2')
+source=(https://github.com/madlib/madlib/archive/v${pkgver}.tar.gz)
+md5sums=('6cc33341d5175d97529d8f792df5b459')
+
+prepare() {
+  find -name '*.py' -exec sed -i '1!b;s/python/python2/' {} \;
+}
+
+build() {
+  cd "$srcdir/$_pkgname-$pkgver"
+  ./configure --prefix=/usr
+  cd build/
+  export python=python2 
+  make -j $(grep -c ^processor /proc/cpuinfo)
+}
+
+package() {
+  cd "$srcdir/$_pkgname-$pkgver"
+  mkdir -p $pkgdir/{usr/share/licenses,opt/madlib}
+  cp license/MADlib.txt "$pkgdir/usr/share/licenses/postgresql-madlib"
+  make DESTDIR="$pkgdir/" install
+  
+  mv $pkgdir/usr/local/madlib/Versions/*/* "$pkgdir/opt/madlib"
+  rm -r "$pkgdir/usr/local/madlib"
+}
