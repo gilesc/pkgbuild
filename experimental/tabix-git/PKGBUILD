@@ -1,0 +1,35 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+_pkgname=tabix
+pkgname=tabix-git
+pkgver=0.2.6-1
+pkgrel=1
+pkgdesc="Tabix: fast retrieval of sequence features from generic TAB-delimited files"
+arch=('i686' 'x86_64')
+url="http://github.com/samtools/tabix"
+license=('MIT')
+makedepends=('git')
+provides=('tabix')
+conflicts=('tabix')
+source=('git://github.com/samtools/tabix.git')
+md5sums=('SKIP')
+
+pkgver() {
+  cd $_pkgname
+  git rev-list --count HEAD
+}
+
+build() {
+  cd "$srcdir/$_pkgname"
+  make
+  make libtabix.so.1
+}
+
+package() {
+  cd "$srcdir/$_pkgname"
+  mkdir -p $pkgdir/usr/{lib,bin}
+  cp -a tabix bgzip "$pkgdir/usr/bin"
+  cp -a libtabix.so.1 "$pkgdir/usr/lib/libtabix.so"
+}
+
+# vim:set ts=2 sw=2 et:

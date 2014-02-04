@@ -2,11 +2,24 @@
 pkgbuild
 ========
 
-Arch Linux PKGBUILDs.
+Arch Linux PKGBUILDs, mostly related to bioinformatics and
+scientific computing.
 
-The packages in the aur/ directory have already been uploaded to the AUR. Feel
-free to report bugs in them either here or in the relevant package's comments
-section on the AUR.
+They come in three categories:
 
-Those packages in experimental/ are in various stages of development; some
-work, some don't. Use them at your own risk.
+- **aur/** - Packages uploaded to the AUR, maintained by me.
+
+- **forks/** - Packages that are in the AUR, are not maintained by
+  me, but have been modified in some way from the AUR version.
+
+- **experimental/** - Packages that are not in the AUR, and that I
+  haven't uploaded to the AUR, possibly because I feel they are too
+  localized or might still contain bugs.
+
+The packages in aur/ should work and be stable. Please feel free to
+report bugs with any packages in the aur/ folder to me, either  on
+Github Issues or on the relevant package's comments section on the
+AUR.
+
+Those packages in experimental/ and forks/ are in various stages of
+development; some work, some don't. Use them at your own risk.
