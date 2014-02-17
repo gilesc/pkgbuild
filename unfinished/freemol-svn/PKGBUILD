@@ -1,0 +1,51 @@
+# Maintainer: Your Name <youremail@domain.com>
+
+pkgname=freemol-svn
+pkgver=154
+pkgrel=1
+pkgdesc="A compilation of FOSS programs for computational chemistry and structural biology."
+arch=('i686' 'x86_64')
+url="http://www.freemol.org/"
+license=('GPL')
+makedepends=('subversion')
+source=('freemol.sh')
+md5sums=('d6dac4a0f93234d81bf65924e03def0e')
+
+_svntrunk=svn://bioinformatics.org/svnroot/freemol/trunk
+_svnmod=freemol
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to SVN server...."
+
+  if [[ -d "$_svnmod/.svn" ]]; then
+    (cd "$_svnmod" && svn up -r "$pkgver")
+  else
+    svn co "$_svntrunk" --config-dir ./ -r "$pkgver" "$_svnmod"
+  fi
+
+  msg "SVN checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_svnmod-build"
+  svn export "$srcdir/$_svnmod" "$srcdir/$_svnmod-build"
+  cd "$srcdir/$_svnmod-build"
+
+  export FREEMOL="$srcdir/$_svnmod-build/freemol"
+  cd src
+  for folder in *; do
+    cd $folder
+    ./configure --prefix=/usr
+    make
+  done
+}
+
+package() {
+  cd "$srcdir/$_svnmod-build/src"
+  for folder in *; do
+    cd $folder
+    make DESTDIR="$pkgdir/" install
+  done
+}
+
+# vim:set ts=2 sw=2 et:

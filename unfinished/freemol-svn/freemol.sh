@@ -1,0 +1,1 @@
+export FREEMOL=/opt/freemol
