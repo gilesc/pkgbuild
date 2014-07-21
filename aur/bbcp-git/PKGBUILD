@@ -3,7 +3,7 @@
 pkgname=bbcp-git
 pkgver=20140718
 pkgrel=1
-pkgdesc=""
+pkgdesc="Securely and quickly copy data from source to target."
 arch=('x86_64')
 url="http://www.slac.stanford.edu/~abh/bbcp/"
 license=('LGPL')
