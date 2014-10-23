@@ -1,0 +1,9 @@
+[Unit]
+Description=SLURM Worker Daemon
+After=network.target munged.service
+
+[Service]
+ExecStart=/usr/bin/slurmd -D
+
+[Install]
+WantedBy=multi-user.target
