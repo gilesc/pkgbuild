@@ -3,7 +3,9 @@ Description=Glances daemon
 After=network.target
 
 [Service]
+ExecStartPre=/usr/bin/touch /tmp/glances.log
 ExecStart=/usr/bin/glances -s
+ExecStartPost=/usr/bin/chmod a+rw /tmp/glances.log
 
 [Install]
 WantedBy=multi-user.target

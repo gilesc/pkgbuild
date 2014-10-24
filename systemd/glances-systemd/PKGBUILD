@@ -1,14 +1,15 @@
 # Maintainer: Cory Giles <mail@corygil.es>
 
 pkgname=glances-systemd
-pkgver=1.0
-pkgrel=1
+pkgver=1.0.0
+pkgrel=4
 pkgdesc="Glances daemon systemd service file."
 arch=('any')
 license=('GPL')
 depends=('glances')
+install='install.sh'
 source=('glancesd.service')
-md5sums=('a221b6bfb2ed49a2e51897b3263c4ce0')
+md5sums=('843db7544be24a83e223c6b4cfe80e28')
 
 package() {
 	cd "$srcdir/"
