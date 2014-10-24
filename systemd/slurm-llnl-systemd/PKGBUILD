@@ -1,13 +1,12 @@
 # Maintainer: Cory Giles <mail@corygil.es>
 
 pkgname=slurm-llnl-systemd
-pkgver=1.0
-pkgrel=1
+pkgver=1.0.0
+pkgrel=2
 pkgdesc="Systemd service files for SLURM job queue server and clients."
 arch=('any')
-url=""
 license=('GPL')
-depends=('slurm')
+depends=('systemd' 'slurm')
 install='install.sh'
 source=('slurmd.service' 'slurmctld.service')
 md5sums=('3d60b61fba7831761bbb18764b27c6a7'

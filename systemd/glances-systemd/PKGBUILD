@@ -2,11 +2,11 @@
 
 pkgname=glances-systemd
 pkgver=1.0.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Glances daemon systemd service file."
 arch=('any')
 license=('GPL')
-depends=('glances')
+depends=('systemd' 'glances')
 install='install.sh'
 source=('glancesd.service')
 md5sums=('843db7544be24a83e223c6b4cfe80e28')
