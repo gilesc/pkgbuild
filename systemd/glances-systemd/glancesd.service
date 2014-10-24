@@ -1,0 +1,9 @@
+[Unit]
+Description=Glances daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/glances -s
+
+[Install]
+WantedBy=multi-user.target
