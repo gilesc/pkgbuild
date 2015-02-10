@@ -2,7 +2,7 @@
 
 pkgname=('kent-utilities')
 _pkgname=jksrc
-pkgver=287
+pkgver=310
 pkgrel=1
 arch=('i686' 'x86_64')
 pkgdesc="Jim Kent's utilities for manipulating genomic data, including the UCSC Genome Browser."
@@ -11,13 +11,13 @@ url=("http://hgdownload.cse.ucsc.edu/admin/"
 license=('custom')
 
 makedepends=('libarchive' 'rsync')
-depends=('libmysqlclient' 'zlib' 'libpng>=1.5.0')
+depends=('libmysqlclient' 'zlib' 'libpng12')
 optdepends=('apache')
 conflicts=('blat')
 provides=('blat')
 
 source=(http://hgdownload.cse.ucsc.edu/admin/${_pkgname}.v${pkgver}.zip)
-md5sums=('72bc983bdd4f4cb03a443b8c4f57cb57')
+md5sums=('ee72928cc3ce5f41122925a59e5844c4')
 
 export MACHTYPE=`uname -m`
 export MYSQLLIBS="/usr/lib/libmysqlclient.a -ldl -lz"
@@ -27,6 +27,12 @@ export PNGLIB=$(echo /usr/lib/libpng*.a | sort -r | tr ' ' '\n' | head -1)" -lm 
 export NCPU=$(grep processor /proc/cpuinfo | wc -l)
 
 build() {
+    if [ ! -f /usr/lib/libpng12.a ] || [ ! -f /usr/lib/libmysqlclient.a ]; then
+        echo "ERROR: libpng12 and libmysqlclient must be built with static libraries!"
+        echo "(change !staticlibs -> staticlibs in /etc/makepkg.conf and rebuild)"
+        exit 1
+    fi 1>& 2
+
     # Build the Kent utilities
     mkdir -p "$srcdir/bin/$MACHTYPE" \
         $srcdir/ucsc-genome-browser/{cgi-bin,cgi-bin-user,bin}
@@ -41,14 +47,14 @@ build() {
     HOME=$srcdir make -j$NCPU blatSuite
 
     # Build the Genome Browser
-    export CGI_BIN=$srcdir/ucsc-genome-browser/cgi-bin
-    export DOCUMENTROOT=$srcdir/ucsc-genome-browser
-    cd hg
-    HOME=$srcdir USER=user make -j$NCPU
-    rm -r $srcdir/ucsc-genome-browser/cgi-bin-user
+    #export CGI_BIN=$srcdir/ucsc-genome-browser/cgi-bin
+    #export DOCUMENTROOT=$srcdir/ucsc-genome-browser
+    #cd hg
+    #HOME=$srcdir USER=user make -j$NCPU
+    #rm -r $srcdir/ucsc-genome-browser/cgi-bin-user
 
-    mkdir -p $srcdir/perl
-    mv $srcdir/bin/$MACHTYPE/*.pm $srcdir/perl
+    #mkdir -p $srcdir/perl
+    #mv $srcdir/bin/$MACHTYPE/*.pm $srcdir/perl
 }
 
 package() {
@@ -59,13 +65,13 @@ package() {
     # with the perl stdlib module.
     #mkdir -p $pkgdir/usr/lib/perl5/vendor_perl
     mkdir -p $pkgdir/usr/share/doc
-    mkdir -p $pkgdir/usr/share/webapps
+    #mkdir -p $pkgdir/usr/share/webapps
 
     #install -t $pkgdir/usr/lib/perl5/vendor_perl perl/*
     install -t $pkgdir/usr/share/doc kent/README
     install -t $pkgdir/usr/bin bin/$MACHTYPE/* 
     install -t $pkgdir/usr/lib kent/src/lib/$MACHTYPE/*.a
     install -t $pkgdir/usr/include/kent kent/src/inc/*
-    cp -dr --no-preserve=ownership $srcdir/ucsc-genome-browser \
-        $pkgdir/usr/share/webapps
+    #cp -dr --no-preserve=ownership $srcdir/ucsc-genome-browser \
+    #    $pkgdir/usr/share/webapps
 }

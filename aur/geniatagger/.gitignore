@@ -1,0 +1,5 @@
+*
+
+!.gitignore
+!PKGBUILD
+!geniatagger-3.0.1.patch
