@@ -11,11 +11,13 @@ depends=('python2')
 
 if [ "$CARCH" == "x86_64" ]; then
     md5sums=('7cbb244257667171159bd7cb28aa11ce')
+    _arch="$CARCH"
 else
     md5sums=('57c246badaaeb3866ef6b75fa9594db9')
+    _arch="i386"
 fi
 
-source=(https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/${pkgname}_linux_${CARCH/6/3}-v${pkgver}.tar.bz2)
+source=(https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/${pkgname}_linux_${_arch}-v${pkgver}.tar.bz2)
 
 build() {
     cd "$srcdir"
