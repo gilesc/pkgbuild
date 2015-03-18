@@ -2,6 +2,7 @@
 
 pkgname='apache-clownfish'
 pkgver=0.4.2
+pkgdesc="Symbiotic object system for C"
 _pkgminor=0.4
 _pkgmajor=0
 
