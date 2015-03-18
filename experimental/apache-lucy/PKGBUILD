@@ -1,0 +1,34 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname='apache-lucy'
+pkgver=0.4.2
+pkgrel=1
+pkgdesc="Full-text search for dynamic programming languages."
+arch=('i686' 'x86_64')
+depends=('apache-clownfish')
+url="http://lucy.apache.org/"
+license=('Apache')
+source=("http://apache.cs.utah.edu/lucy/${pkgname}-${pkgver}.tar.gz")
+md5sums=('1a40115ee38ba43445cffe2861c9fd70')
+
+build() {
+    cd $srcdir/$pkgname-$pkgver/c/
+    ./configure
+    make
+}
+
+package() {
+    cd $srcdir/$pkgname-$pkgver/c/
+    ./install.sh --prefix $pkgdir/usr/
+
+    {
+        grep -v "Libs:" $pkgdir/usr/lib/pkgconfig/lucy.pc 
+        echo "Libs: -L/usr/lib/ -llucy -lcfish"
+    } > $pkgdir/usr/lib/pkgconfig/lucy.pc.1
+    mv $pkgdir/usr/lib/pkgconfig/lucy.pc{.1,}
+
+    mkdir $pkgdir/usr/include/
+    mv autogen/include/{Lucy*,*lucy*} $pkgdir/usr/include/
+
+    mv $pkgdir/usr/man/ $pkgdir/usr/share/
+}

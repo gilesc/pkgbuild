@@ -1,0 +1,56 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname=mcdb-git
+pkgver=20150306
+pkgrel=1
+pkgdesc="fast, reliable, simple code to create and read constant databases"
+arch=('x86_64')
+url="https://github.com/gstrauss/mcdb"
+license=('GPL')
+depends=()
+makedepends=('git')
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=()
+noextract=()
+md5sums=() #generate with 'makepkg -g'
+
+_gitroot=https://github.com/gstrauss/mcdb.git
+_gitname=mcdb
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+  git submodule update --init
+
+  make PREFIX="$pkgdir/usr"
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+  make PREFIX="$pkgdir/usr" install
+  mv $pkgdir/usr/sbin/* $pkgdir/usr/bin
+  mv $pkgdir/usr/lib64/* $pkgdir/usr/lib/
+  rm -r $pkgdir/usr/{sbin,lib64}
+  mv $pkgdir/usr/etc $pkgdir/
+}
+
+# vim:set ts=2 sw=2 et:

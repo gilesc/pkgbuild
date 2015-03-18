@@ -1,0 +1,44 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+pkgname='apache-clownfish'
+pkgver=0.4.2
+_pkgminor=0.4
+_pkgmajor=0
+
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://lucy.apache.org/"
+license=('Apache')
+source=("http://apache.cs.utah.edu/lucy/clownfish/${pkgname}-${pkgver}.tar.gz")
+md5sums=('1c4c08efa856f06452bbf9c8454c7f76')
+
+build() {
+	cd "$pkgname-$pkgver"/compiler/c/
+	./configure
+	make
+    cd ../../runtime/c/
+	./configure
+	make
+}
+
+package() {
+    cd "$pkgname-$pkgver"/compiler/c/
+    install -D cfc "$pkgdir/usr/bin/cfc"
+    cd ../../runtime/c/
+    ./install.sh --prefix "$pkgdir/usr"
+
+    {
+        grep -v "Libs:" $pkgdir/usr/lib/pkgconfig/clownfish.pc 
+        echo "Libs: -L/usr/lib/ -lcfish"
+    } > $pkgdir/usr/lib/pkgconfig/clownfish.pc.1
+    mv $pkgdir/usr/lib/pkgconfig/{clownfish.pc.1,clownfish.pc}
+    mv $pkgdir/usr/man/ $pkgdir/usr/share/
+    cp -r autogen/include/ $pkgdir/usr/include
+    rm $pkgdir/usr/include/callbacks.h
+
+    cd $pkgdir/usr/lib/
+    find -maxdepth 1 -type l -exec rm {} \;
+    ln -sr libcfish.so.${pkgver} libcfish.so.${_pkgminor}
+    ln -sr libcfish.so.${pkgver} libcfish.so.${_pkgmajor}
+    ln -sr libcfish.so.${pkgver} libcfish.so
+}
