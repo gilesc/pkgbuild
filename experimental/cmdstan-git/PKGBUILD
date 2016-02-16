@@ -53,9 +53,11 @@ package() {
   # NOTE: bin/stansummary doesn't compile, an error with eigen
   # bin/print doesn't compile either, but it is deprecated
   cd "$srcdir/$_gitname-build"
-  mkdir -p $pkgdir/usr/bin $pkgdir/usr/lib
+  mkdir -p $pkgdir/usr/{bin,lib,include}
   install -t $pkgdir/usr/bin bin/stanc
   install -t $pkgdir/usr/lib bin/libstanc.a
+  cp -r stan/src/stan $pkgdir/usr/include/stan
+  find $pkgdir/usr/include/stan -name '*.cpp' -exec rm {} \;
 }
 
 # vim:set ts=2 sw=2 et:
