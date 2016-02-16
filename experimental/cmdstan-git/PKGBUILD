@@ -1,0 +1,61 @@
+# Maintainer: Cory Giles <mail@corygil.es>
+
+# NOTE: this pkgbuild combines stan the library (libstanc.a) and the stanc executable
+# Really, stan-git should be a separate package, but this method keeps the versions in sync.
+
+pkgname=cmdstan-git
+pkgver=2.9.0
+pkgrel=1
+pkgdesc="A CLI for stan, a probabilistic modeling language."
+arch=('i686' 'x86_64')
+url="http://mc-stan.org/"
+license=('BSD')
+groups=()
+depends=('eigen' 'boost' 'gtest')
+makedepends=('git')
+provides=('stan' 'cmdstan')
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=()
+noextract=()
+md5sums=() #generate with 'makepkg -g'
+
+_gitroot=https://github.com/stan-dev/cmdstan.git
+_gitname=cmdstan-git
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+  git submodule init
+  git submodule update
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone --recursive "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  make -j bin/stanc
+}
+
+package() {
+  # NOTE: bin/stansummary doesn't compile, an error with eigen
+  # bin/print doesn't compile either, but it is deprecated
+  cd "$srcdir/$_gitname-build"
+  mkdir -p $pkgdir/usr/bin $pkgdir/usr/lib
+  install -t $pkgdir/usr/bin bin/stanc
+  install -t $pkgdir/usr/lib bin/libstanc.a
+}
+
+# vim:set ts=2 sw=2 et:
